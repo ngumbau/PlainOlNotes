@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -47,6 +48,14 @@ public class EditorActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (action.equals(Intent.ACTION_EDIT)){
+            getMenuInflater().inflate(R.menu.menu_editor, menu);
+        }
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
@@ -54,8 +63,19 @@ public class EditorActivity extends AppCompatActivity {
             case android.R.id.home:
                 finishEditing();
                 break;
+            case R.id.action_delete:
+                deleteNote();
+                break;
         }
         return true;
+    }
+
+    private void deleteNote() {
+        getContentResolver().delete(NotesProvider.CONTENT_URI, noteFilter, null);
+        Toast.makeText(this, getString(R.string.note_deleted),
+                Toast.LENGTH_SHORT).show();
+        setResult(RESULT_OK);
+        finish();
     }
 
     private void finishEditing(){
@@ -71,7 +91,7 @@ public class EditorActivity extends AppCompatActivity {
                 break;
             case Intent.ACTION_EDIT:
                 if(newText.length() == 0){
-//                    deleteNote();
+                    deleteNote();
                 }else if (oldText.equals(newText)){
                 setResult(RESULT_CANCELED);
                 }else{
