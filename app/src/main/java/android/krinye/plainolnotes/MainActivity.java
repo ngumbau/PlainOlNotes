@@ -8,9 +8,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
+import android.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -27,20 +27,18 @@ implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private CursorAdapter cursorAdapter;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         String[] from = {DbOpenHelper.NOTE_TEXT};
-        int[] to = {android.R.id.text1};
-        cursorAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1,
-                null, from, to, 0);
+        int[] to = {R.id.tvNote};
+        cursorAdapter = new NotesCursorAdapter(this, null, 0);
         ListView list = (ListView) findViewById(android.R.id.list);
         list.setAdapter(cursorAdapter);
 
-        getSupportLoaderManager().initLoader(0, null, this);
+        getLoaderManager().initLoader(0, null, this);
     }
 
     public boolean onCreateOptionsMenu(Menu menu){
@@ -96,7 +94,7 @@ implements LoaderManager.LoaderCallbacks<Cursor> {
     }
 
     private void restartLoader(){
-        getSupportLoaderManager().restartLoader(0, null, this);
+        getLoaderManager().restartLoader(0, null, this);
     }
     private void insertNote(String noteText) {
         ContentValues values = new ContentValues();
